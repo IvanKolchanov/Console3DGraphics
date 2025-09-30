@@ -1,11 +1,13 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Console3DGraphics
 {
     class Program
     {
-        public static int width = 224, height = 63;
+        public static int width = Console.LargestWindowWidth / 3, height = Console.LargestWindowHeight / 3;
         public static double aspect = (double)width / height, pixelAspect = 0.5;
         private static Point camera;
         public static Point lightSource = new Point(0, -1, 2);
@@ -88,13 +90,14 @@ namespace Console3DGraphics
                             int color = 0;
                             if (lightPoints[0].isEqual(intersectionPoint)) color = Math.Max(0, Math.Min(gradient.Length - 1, (int)((length2 / length1 - 0.6) / oneColor)));
                             else color = Math.Max(0, Math.Min(gradient.Length - 1, (int)((length1 / length2 - 0.6) / oneColor)));
-                            Console.SetCursorPosition(i, j);
-                            Console.Write(gradient[color]);
+                            //Console.SetCursorPosition(i, j);
+                            //Console.Write(gradient[color]);
+                            FConsole.SetChar((short)i, (short)j, new PixelValue(ConsoleColor.White, ConsoleColor.Black, gradient[color]));
                         }
                     }
                     else
                     {
-                        Console.Write(' ');
+                        FConsole.SetChar((short)i, (short)j, new PixelValue(ConsoleColor.White, ConsoleColor.Black, ' '));
                     }
                 }
             }
@@ -108,10 +111,13 @@ namespace Console3DGraphics
             Console.Title = "Console 3D graphics";
             findScreenPosition();
             findScreenDirects();
+            FConsole.Clear();
+            FConsole.Initialize("Run video to symbols", ConsoleColor.White, ConsoleColor.Black);
             while (true)
             {
                 Console.CursorVisible = false;
                 traceRays();
+                FConsole.DrawBuffer();
                 lightSource = turnVector(lightSource, 15);
             }
         }
